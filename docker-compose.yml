@@ -89,6 +89,26 @@ services:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
+  sim1:
+    build:
+      context: mqtt-sim
+    image: mqtt-sim:latest
+    depends_on:
+      - mosquitto
+    environment:
+      SERVERS: mosquitto
+      NODE_NAME: meter-sim1
+
+  mosquitto:
+    image: eclipse-mosquitto
+    healthcheck:
+      test: ["CMD-SHELL", "timeout -s KILL 3 mosquitto_sub -t '$$SYS/#' -C 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    ports:
+      - 1883:1883
+
 networks:
   db:
   traefiknet:

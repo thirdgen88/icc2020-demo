@@ -1,0 +1,4 @@
+[submodule "mqtt-sim"]
+	path = mqtt-sim
+	url = https://gitea.thundranos.com/kyle/mqtt-meter
+	branch = dockerize
