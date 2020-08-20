@@ -1,4 +1,4 @@
-# Multi Gateway w/ Database and Reverse Proxy Compose Stack
+# Full Example Ignition Compose Stack
 
 ## Features
 
@@ -8,3 +8,5 @@
   * MQTT Transmission Module
 * MariaDB Database
 * Traefik Reverse Proxy
+* Mosquitto MQTT Broker
+* MQTT Simulator
