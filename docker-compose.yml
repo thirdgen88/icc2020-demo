@@ -10,11 +10,28 @@ services:
       - db
     volumes:
       - ignition-central-data:/var/lib/ignition/data
+      - ./central-modules:/modules
     environment:
       GATEWAY_SYSTEM_NAME: ignition-central
       GATEWAY_ADMIN_PASSWORD: password
       IGNITION_EDITION: full
       TZ: "America/Edmonton"
+    restart: unless-stopped
+
+  ign-site1:
+    image: kcollins/ignition:8.0.14
+    ports:
+      - 8089:8088
+    networks:
+      - default
+    volumes:
+      - ign-site1-data:/var/lib/ignition/data
+      - ./edge-modules:/modules
+    environment:
+      GATEWAY_SYSTEM_NAME: site1
+      GATEWAY_ADMIN_PASSWORD: password
+      IGNITION_EDITION: edge
+      TZ: "America/Chicago"
     restart: unless-stopped
 
   db:
@@ -37,4 +54,5 @@ networks:
 
 volumes:
   ignition-central-data:
+  ign-site1-data:
   db-data:
