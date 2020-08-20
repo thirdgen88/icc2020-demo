@@ -1,1 +1,1 @@
-# Basic Single Gateway Compose Stack
+# Gateway and DB Compose Stack

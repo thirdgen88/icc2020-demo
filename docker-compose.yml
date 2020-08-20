@@ -7,6 +7,7 @@ services:
       - 8088:8088
     networks:
       - default
+      - db
     volumes:
       - ignition-central-data:/var/lib/ignition/data
     environment:
@@ -16,5 +17,24 @@ services:
       TZ: "America/Edmonton"
     restart: unless-stopped
 
+  db:
+    image: mariadb:10.5
+    ports:
+      - 3306:3306
+    networks:
+      - db
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ignition
+      MYSQL_DATABASE: ignition
+      MYSQL_USER: ignition
+      MYSQL_PASSWORD: ignition
+    restart: unless-stopped
+
+networks:
+  db:
+
 volumes:
   ignition-central-data:
+  db-data:
