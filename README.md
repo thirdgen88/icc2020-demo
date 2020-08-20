@@ -1,4 +1,4 @@
-# Multi Gateway w/ Database Compose Stack
+# Multi Gateway w/ Database and Reverse Proxy Compose Stack
 
 ## Features
 
@@ -7,3 +7,4 @@
 * Site-Level Edge Gateway
   * MQTT Transmission Module
 * MariaDB Database
+* Traefik Reverse Proxy

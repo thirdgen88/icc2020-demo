@@ -7,6 +7,7 @@ services:
       - 8088:8088
     networks:
       - default
+      - traefiknet
       - db
     volumes:
       - ignition-central-data:/var/lib/ignition/data
@@ -16,6 +17,12 @@ services:
       GATEWAY_ADMIN_PASSWORD: password
       IGNITION_EDITION: full
       TZ: "America/Edmonton"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefiknet"
+      - "traefik.http.routers.central.entrypoints=web"
+      - "traefik.http.routers.central.rule=Host(`central.vcap.me`)"
+      - "traefik.http.services.central.loadbalancer.server.port=8088"
     restart: unless-stopped
 
   ign-site1:
@@ -24,6 +31,7 @@ services:
       - 8089:8088
     networks:
       - default
+      - traefiknet
     volumes:
       - ign-site1-data:/var/lib/ignition/data
       - ./edge-modules:/modules
@@ -32,6 +40,12 @@ services:
       GATEWAY_ADMIN_PASSWORD: password
       IGNITION_EDITION: edge
       TZ: "America/Chicago"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefiknet"
+      - "traefik.http.routers.site1.entrypoints=web"
+      - "traefik.http.routers.site1.rule=Host(`site1.vcap.me`)"
+      - "traefik.http.services.site1.loadbalancer.server.port=8088"
     restart: unless-stopped
 
   db:
@@ -49,8 +63,36 @@ services:
       MYSQL_PASSWORD: ignition
     restart: unless-stopped
 
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.2
+    # Enables the web UI and tells Traefik to listen to docker
+    command: |
+      --entrypoints.web.address=:80
+      --api.insecure=true 
+      --api.dashboard=true
+      --providers.docker 
+      --providers.docker.exposedByDefault=false
+    networks:
+      - traefiknet
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.vcap.me`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
 networks:
   db:
+  traefiknet:
+    name: traefiknet
 
 volumes:
   ignition-central-data:
