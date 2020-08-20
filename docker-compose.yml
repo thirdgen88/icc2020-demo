@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  ignition-central:
+    image: kcollins/ignition:8.0.14
+    ports:
+      - 8088:8088
+    networks:
+      - default
+    volumes:
+      - ignition-central-data:/var/lib/ignition/data
+    environment:
+      GATEWAY_SYSTEM_NAME: ignition-central
+      GATEWAY_ADMIN_PASSWORD: password
+      IGNITION_EDITION: full
+      TZ: "America/Edmonton"
+    restart: unless-stopped
+
+volumes:
+  ignition-central-data:

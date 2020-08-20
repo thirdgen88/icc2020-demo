@@ -1,1 +1,1 @@
-# ICC 2020 - Container Deployments with Ignition on Docker
+# Basic Single Gateway Compose Stack
